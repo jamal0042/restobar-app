@@ -1,167 +1,185 @@
-import React from 'react';
-import { StyleSheet, Text, View, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { useForm, Controller } from 'react-hook-form';
-import { Button } from '../components/ui/button';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, Platform, ActivityIndicator } from 'react-native';
 import { Input } from '../components/ui/input';
-import { Select } from '../components/ui/select';
+import { theme } from '../theme/colors';
 
 interface LoginScreenProps {
-onLoginSuccess: (role: string) => void;
+  onLoginSuccess: () => void;
 }
 
 export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
-const { control, handleSubmit, formState: { errors } } = useForm({
-defaultValues: { email: '', password: '', role: 'admin' }
-});
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-const onSubmit = (data: any) => {
-onLoginSuccess(data.role);
-};
+  const handleLogin = () => {
+    if (!username || !password) {
+      setError('Veuillez remplir tous les champs');
+      return;
+    }
+    
+    setError('');
+    setLoading(true);
 
-// Gestion adaptative du conteneur de clic pour éviter de bloquer les inputs sur le Web
-const isWeb = Platform.OS === 'web';
+    // Simulation d'authentification ultra rapide
+    setTimeout(() => {
+      setLoading(false);
+      onLoginSuccess();
+    }, 800);
+  };
 
-const renderForm = () => (
-<View style={styles.inner}>
-    <View style={styles.glassCard}>
-    <View style={styles.iconContainer}>
-        <Text style={styles.iconText}>🏢</Text>
-    </View>
+  return (
+    <ImageBackground 
+      source={{ uri: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1200' }} 
+      style={styles.backgroundImage}
+      resizeMode="cover"
+    >
+      {/* Overlay sombre de fond */}
+      <View style={styles.darkOverlay} />
 
-    <Text style={styles.title}>Royal POS</Text>
-    <Text style={styles.subtitle}>Restaurant • Bar • Hôtel — terminal PWA installable</Text>
+      <View style={styles.cardContainer}>
+        {/* Titre et Logo de l'application */}
+        <View style={styles.logoRow}>
+          <View style={[styles.logoIcon, { backgroundColor: theme.primary }]}>
+            <Text style={{ fontSize: 20, color: '#ffffff' }}>👑</Text>
+          </View>
+          <Text style={styles.appName}>Royal POS</Text>
+        </View>
 
-    <View style={styles.form}>
-        
-        {/* Email */}
-        <View style={{ zIndex: 3 }}>
-        <Controller
-            control={control}
-            rules={{ required: true }}
-            name="email"
-            render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-                placeholder="admin@hotel.local"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                autoCapitalize="none"
-                keyboardType="email-address"
-                style={errors.email ? styles.inputError : undefined}
-            />
+        <Text style={styles.welcomeText}>Connexion au système</Text>
+        <Text style={styles.subtitleText}>Entrez vos accès pour gérer votre restaurant.</Text>
+
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+        {/* Inputs branchés sur l'UI atomique et thémée */}
+        <View style={styles.form}>
+          <Text style={styles.fieldLabel}>Identifiant</Text>
+          <Input 
+            placeholder="Ex: admin" 
+            value={username}
+            onChangeText={setUsername}
+            autoCapitalize="none"
+          />
+
+          <Text style={[styles.fieldLabel, { marginTop: 12 }]}>Mot de passe</Text>
+          <Input 
+            placeholder="••••••••" 
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+            autoCapitalize="none"
+          />
+
+          {/* Bouton de soumission calqué sur theme.primary */}
+          <TouchableOpacity 
+            style={[styles.submitButton, { backgroundColor: theme.primary }]} 
+            onPress={handleLogin}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="#ffffff" size="small" />
+            ) : (
+              <Text style={styles.submitButtonText}>Se connecter</Text>
             )}
-        />
+          </TouchableOpacity>
         </View>
 
-        {/* Mot de passe */}
-        <View style={{ zIndex: 2 }}>
-        <Controller
-            control={control}
-            rules={{ required: true }}
-            name="password"
-            render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-                placeholder="••••••••"
-                secureTextEntry
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                autoCapitalize="none"
-                style={errors.password ? styles.inputError : undefined}
-            />
-            )}
-        />
-        </View>
-
-        {/* Sélecteur de Rôle */}
-        <View style={{ zIndex: 10 }}>
-        <Controller
-            control={control}
-            name="role"
-            render={({ field: { onChange, value } }) => (
-            <Select
-                value={value}
-                onValueChange={onChange}
-                options={[
-                { label: "Administrateur", value: "admin" },
-                { label: "Caissier", value: "caissier" },
-                ]}
-            />
-            )}
-        />
-        </View>
-
-        {/* Bouton de validation */}
-        <View style={{ zIndex: 1 }}>
-        <Button 
-            label="Connexion sécurisée" 
-            onPress={handleSubmit(onSubmit)} 
-            variant="default"
-            style={styles.submitBtn}
-        />
-        </View>
-
-    </View>
-    </View>
-</View>
-);
-
-return (
-<KeyboardAvoidingView 
-    behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
-    style={styles.container}
->
-    <View style={styles.gradientBg}>
-    {isWeb ? (
-        renderForm()
-    ) : (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        {renderForm()}
-        </TouchableWithoutFeedback>
-    )}
-    </View>
-</KeyboardAvoidingView>
-);
+        {/* Pied de page de la boîte de connexion */}
+        <Text style={styles.footerText}>Royal POS v1.0.0 • Sécurisé</Text>
+      </View>
+    </ImageBackground>
+  );
 }
 
 const styles = StyleSheet.create({
-container: { flex: 1 },
-gradientBg: {
-flex: 1,
-backgroundColor: '#800040',
-justifyContent: 'center',
-alignItems: 'center',
-...Platform.select({
-    web: {
-    backgroundImage: 'linear-gradient(135deg, #a21caf 0%, #b91c1c 50%, #1e1b4b 100%)',
-    },
-}) as any,
-},
-inner: { width: '100%', maxWidth: 420, padding: 20 },
-glassCard: {
-backgroundColor: 'rgba(255, 255, 255, 0.07)',
-borderRadius: 24,
-padding: 32,
-borderWidth: 1,
-borderColor: 'rgba(255, 255, 255, 0.12)',
-alignItems: 'center',
-shadowColor: '#000',
-shadowOffset: { width: 0, height: 10 },
-shadowOpacity: 0.3,
-shadowRadius: 20,
-elevation: 10,
-...Platform.select({
-    web: {
-    backdropFilter: 'blur(20px)',
-    WebkitBackdropFilter: 'blur(20px)',
-    },
-}) as any,
-},
-iconContainer: { width: 48, height: 48, backgroundColor: '#ffffff', borderRadius: 12, justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
-iconText: { fontSize: 24 },
-title: { fontSize: 32, fontWeight: '800', color: '#ffffff', textAlign: 'center', letterSpacing: -0.5 },
-subtitle: { fontSize: 12, color: 'rgba(255, 255, 255, 0.7)', textAlign: 'center', marginTop: 6, marginBottom: 28 },
-form: { width: '100%' },
-inputError: { borderColor: 'rgba(239, 68, 68, 0.5)', backgroundColor: 'rgba(239, 68, 68, 0.05)' },
-submitBtn: { backgroundColor: '#ffffff', height: 46, borderRadius: 24, marginTop: 20 },
+  backgroundImage: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+  },
+  darkOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.65)',
+  },
+  cardContainer: {
+    width: '90%',
+    maxWidth: 400,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    borderRadius: 16,
+    padding: 32,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.12)',
+    ...Platform.select({
+      web: { backdropFilter: 'blur(16px)', boxStyle: 'border-box' } as any
+    })
+  },
+  logoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 24,
+  },
+  logoIcon: {
+    width: 38,
+    height: 38,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  appName: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#ffffff',
+    letterSpacing: -0.5,
+  },
+  welcomeText: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#ffffff',
+  },
+  subtitleText: {
+    fontSize: 13,
+    color: 'rgba(255, 255, 255, 0.6)',
+    marginTop: 4,
+    marginBottom: 24,
+  },
+  form: {
+    width: '100%',
+  },
+  fieldLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.8)',
+    marginBottom: 4,
+    marginLeft: 2,
+  },
+  errorText: {
+    color: '#ef4444',
+    fontSize: 13,
+    fontWeight: '500',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  submitButton: {
+    height: 48,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 24,
+    width: '100%',
+  },
+  submitButtonText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  footerText: {
+    textAlign: 'center',
+    fontSize: 11,
+    color: 'rgba(255, 255, 255, 0.4)',
+    marginTop: 24,
+  },
 });

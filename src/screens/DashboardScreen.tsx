@@ -15,7 +15,7 @@ Settings,
 Moon, 
 LogOut 
 } from 'lucide-react-native';
-import { theme } from '../themes/color';
+import { theme } from '../theme/colors';
 
 interface DashboardScreenProps {
 onLogout: () => void;
