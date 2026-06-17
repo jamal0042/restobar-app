@@ -22,7 +22,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
     setError('');
     setLoading(true);
 
-    // Simulation d'authentification ultra rapide
+    // Simulation d'authentification rapide
     setTimeout(() => {
       setLoading(false);
       onLoginSuccess();
@@ -35,7 +35,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
       style={styles.backgroundImage}
       resizeMode="cover"
     >
-      {/* Overlay sombre de fond */}
+      {/* Overlay sombre de fond corrigé */}
       <View style={styles.darkOverlay} />
 
       <View style={styles.cardContainer}>
@@ -52,7 +52,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
 
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-        {/* Inputs branchés sur l'UI atomique et thémée */}
+        {/* Formulaire */}
         <View style={styles.form}>
           <Text style={styles.fieldLabel}>Identifiant</Text>
           <Input 
@@ -71,7 +71,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
             autoCapitalize="none"
           />
 
-          {/* Bouton de soumission calqué sur theme.primary */}
+          {/* Bouton de soumission */}
           <TouchableOpacity 
             style={[styles.submitButton, { backgroundColor: theme.primary }]} 
             onPress={handleLogin}
@@ -85,7 +85,6 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
           </TouchableOpacity>
         </View>
 
-        {/* Pied de page de la boîte de connexion */}
         <Text style={styles.footerText}>Royal POS v1.0.0 • Sécurisé</Text>
       </View>
     </ImageBackground>
@@ -113,7 +112,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.12)',
     ...Platform.select({
-      web: { backdropFilter: 'blur(16px)', boxStyle: 'border-box' } as any
+      web: { backdropFilter: 'blur(16px)', boxSizing: 'border-box' } as any
     })
   },
   logoRow: {
