@@ -1,32 +1,46 @@
 import React from 'react';
-import { StyleSheet, Text, View, SafeAreaView, ScrollView, Platform, TouchableOpacity } from 'react-native';
-import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView, Platform, TouchableOpacity, Dimensions } from 'react-native';
+import Svg, { Defs, LinearGradient as SvgGradient, Stop, Path, Rect } from 'react-native-svg';
+import { CheckCircle2, BarChart3, Banknote, Users, CreditCard, ShoppingCart, Box, Calendar, FileText, Settings, Moon, LogOut } from 'lucide-react-native';
 
 interface DashboardScreenProps {
   onLogout: () => void;
 }
 
+const { width: screenWidth } = Dimensions.get('window');
+
 export function DashboardScreen({ onLogout }: DashboardScreenProps) {
+  const isWeb = Platform.OS === 'web';
+
+  // Données simulées pour l'histogramme des produits les plus vendus
+  const produitsPlusVendus = [
+    { name: 'Coca-Cola', value: 2, color: '#b91c1c' },
+    { name: 'Pizza royale', value: 1, color: '#a21caf' },
+    { name: 'Poulet braisé', value: 1, color: '#b91c1c' },
+  ];
+
   return (
     <SafeAreaView style={styles.container}>
       {/* 1. EN-TÊTE (HEADER) */}
       <View style={styles.header}>
         <View style={styles.userInfo}>
           <View style={styles.avatarFake}>
-            <Text style={{ fontSize: 18 }}>👨‍💼</Text>
+            <Text style={{ fontSize: 16 }}>🍳</Text>
           </View>
           <View>
-            <Text style={styles.userName}>Royal POS</Text>
+            <View style={styles.titleRow}>
+              <Text style={styles.userName}>Royal POS</Text>
+            </View>
             <Text style={styles.userRole}>Administrateur • Administrateur</Text>
           </View>
         </View>
         
         <View style={styles.headerActions}>
           <TouchableOpacity style={styles.iconBtn}>
-            <Text style={{ fontSize: 16 }}>🌙</Text>
+            <Moon size={16} color="#09090b" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.logoutBtn} onPress={onLogout}>
+            <LogOut size={14} color="#09090b" style={{ marginRight: 6 }} />
             <Text style={styles.logoutBtnText}>Sortir</Text>
           </TouchableOpacity>
         </View>
@@ -34,134 +48,165 @@ export function DashboardScreen({ onLogout }: DashboardScreenProps) {
 
       <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         
-        {/* 2. BANNIÈRE PRINCIPALE (Avec correction du dégradé) */}
+        {/* 2. BANNIÈRE PRINCIPALE AVEC DÉGRADÉ ROYAL */}
         <View style={styles.banner}>
           <Text style={styles.bannerTitle}>Tableau de bord</Text>
           <Text style={styles.bannerSubtitle}>Vue instantanée des ventes, revenus et performances.</Text>
         </View>
 
-        {/* 3. CARTES DE STATISTIQUES (GRID) */}
+        {/* 3. CARTES DE STATISTIQUES (GRID RESPONSIVE) */}
         <View style={styles.statsGrid}>
           {/* Ventes du jour */}
-          <Card style={styles.statCard}>
-            <CardHeader style={styles.statCardHeader}>
-              <Text style={styles.statIcon}>✔️</Text>
-            </CardHeader>
-            <CardContent style={styles.statCardContent}>
-              <Text style={styles.statValue}>$13.92</Text>
-              <Text style={styles.statLabel}>Ventes du jour</Text>
-            </CardContent>
-          </Card>
+          <View style={styles.statCard}>
+            <View style={[styles.iconWrapper, { backgroundColor: '#fef2f2' }]}>
+              <CheckCircle2 size={20} color="#b91c1c" />
+            </View>
+            <Text style={styles.statValue}>$13.92</Text>
+            <Text style={styles.statLabel}>Ventes du jour</Text>
+          </View>
 
           {/* Ventes du mois */}
-          <Card style={styles.statCard}>
-            <CardHeader style={styles.statCardHeader}>
-              <Text style={styles.statIcon}>📊</Text>
-            </CardHeader>
-            <CardContent style={styles.statCardContent}>
-              <Text style={styles.statValue}>$31.32</Text>
-              <Text style={styles.statLabel}>Ventes du mois</Text>
-            </CardContent>
-          </Card>
+          <View style={styles.statCard}>
+            <View style={[styles.iconWrapper, { backgroundColor: '#fef2f2' }]}>
+              <BarChart3 size={20} color="#b91c1c" />
+            </View>
+            <Text style={styles.statValue}>$31.32</Text>
+            <Text style={styles.statLabel}>Ventes du mois</Text>
+          </View>
 
           {/* Factures */}
-          <Card style={styles.statCard}>
-            <CardHeader style={styles.statCardHeader}>
-              <Text style={styles.statIcon}>💵</Text>
-            </CardHeader>
-            <CardContent style={styles.statCardContent}>
-              <Text style={styles.statValue}>2</Text>
-              <Text style={styles.statLabel}>Factures</Text>
-            </CardContent>
-          </Card>
+          <View style={styles.statCard}>
+            <View style={[styles.iconWrapper, { backgroundColor: '#fef2f2' }]}>
+              <Banknote size={20} color="#b91c1c" />
+            </View>
+            <Text style={styles.statValue}>2</Text>
+            <Text style={styles.statLabel}>Factures</Text>
+          </View>
 
           {/* Utilisateurs */}
-          <Card style={styles.statCard}>
-            <CardHeader style={styles.statCardHeader}>
-              <Text style={styles.statIcon}>👥</Text>
-            </CardHeader>
-            <CardContent style={styles.statCardContent}>
-              <Text style={styles.statValue}>2</Text>
-              <Text style={styles.statLabel}>Utilisateurs</Text>
-            </CardContent>
-          </Card>
+          <View style={styles.statCard}>
+            <View style={[styles.iconWrapper, { backgroundColor: '#fef2f2' }]}>
+              <Users size={20} color="#b91c1c" />
+            </View>
+            <Text style={styles.statValue}>2</Text>
+            <Text style={styles.statLabel}>Utilisateurs</Text>
+          </View>
 
           {/* Revenus */}
-          <Card style={styles.statCard}>
-            <CardHeader style={styles.statCardHeader}>
-              <Text style={styles.statIcon}>💳</Text>
-            </CardHeader>
-            <CardContent style={styles.statCardContent}>
-              <Text style={styles.statValue}>$31.32</Text>
-              <Text style={styles.statLabel}>Revenus</Text>
-            </CardContent>
-          </Card>
+          <View style={styles.statCard}>
+            <View style={[styles.iconWrapper, { backgroundColor: '#fef2f2' }]}>
+              <CreditCard size={20} color="#b91c1c" />
+            </View>
+            <Text style={styles.statValue}>$31.32</Text>
+            <Text style={styles.statLabel}>Revenus</Text>
+          </View>
         </View>
 
-        {/* 4. BLOCS GRAPHIQUES (Fidèles à l'image_97eb14.png) */}
+        {/* 4. ZONE DES GRAPHES REPRÉSENTATIFS */}
         <View style={styles.chartsRow}>
-          {/* Évolution des ventes */}
-          <Card style={styles.chartCard}>
-            <CardHeader>
-              <CardTitle style={styles.chartTitle}>Évolution des ventes</CardTitle>
-            </CardHeader>
-            <CardContent style={styles.chartPlaceholder}>
-              <View style={styles.fakeChartArea}>
-                <Text style={{ color: '#a1a1aa', fontSize: 13 }}>[ Graphique Linéaire : Ven. ventes : 0 ]</Text>
+          
+          {/* GRAPHIQUE 1 : ÉVOLUTION DES VENTES */}
+          <View style={styles.chartCard}>
+            <Text style={styles.chartTitle}>Évolution des ventes</Text>
+            <View style={styles.chartWrapper}>
+              {/* Tracé de la courbe SVG fluide identique à la maquette */}
+              <Svg height="160" width="100%">
+                <Defs>
+                  <SvgGradient id="grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <Stop offset="0%" stopColor="#b91c1c" stopOpacity="0.25" />
+                    <Stop offset="100%" stopColor="#b91c1c" stopOpacity="0.0" />
+                  </SvgGradient>
+                </Defs>
+                {/* Lignes de grille en arrière-plan */}
+                <Path d="M 0 40 L 500 40M 0 80 L 500 80M 0 120 L 500 120" stroke="#f4f4f5" strokeWidth="1" strokeDasharray="4" />
+                {/* Remplissage sous la courbe */}
+                <Path d="M 0 150 L 150 150 L 220 150 Q 250 140 270 90 T 320 30 Q 360 40 400 60 L 400 150 Z" fill="url(#grad)" />
+                {/* Ligne de la courbe principale */}
+                <Path d="M 0 150 L 150 150 L 220 150 Q 250 140 270 90 T 320 30 Q 360 40 400 60" fill="none" stroke="#b91c1c" strokeWidth="2" />
+              </Svg>
+              {/* Indicateur de Tooltip flottant (ven. ventes : 0) */}
+              <View style={styles.tooltipBox}>
+                <Text style={styles.tooltipDay}>ven.</Text>
+                <Text style={styles.tooltipValue}>ventes : 0</Text>
               </View>
-            </CardContent>
-          </Card>
+              {/* Axe X des jours */}
+              <View style={styles.axisX}>
+                {['jeu.', 'ven.', 'sam.', 'dim.', 'lun.', 'mar.', 'mer.'].map((day, idx) => (
+                  <Text key={idx} style={styles.axisLabel}>{day}</Text>
+                ))}
+              </View>
+            </View>
+          </View>
 
-          {/* Produits les plus vendus */}
-          <Card style={styles.chartCard}>
-            <CardHeader>
-              <CardTitle style={styles.chartTitle}>Produits les plus vendus</CardTitle>
-            </CardHeader>
-            <CardContent style={styles.chartPlaceholder}>
-              <View style={styles.fakeBarChart}>
-                <View style={[styles.fakeBar, { height: 80, backgroundColor: '#b91c1c' }]}><Text style={styles.barLabel}>Coca-Cola</Text></View>
-                <View style={[styles.fakeBar, { height: 50, backgroundColor: '#a21caf' }]}><Text style={styles.barLabel}>Pizza royale</Text></View>
-                <View style={[styles.fakeBar, { height: 50, backgroundColor: '#b91c1c' }]}><Text style={styles.barLabel}>Poulet braisé</Text></View>
-              </View>
-            </CardContent>
-          </Card>
+          {/* GRAPHIQUE 2 : PRODUITS LES PLUS VENDUS */}
+          <View style={styles.chartCard}>
+            <Text style={styles.chartTitle}>Produits les plus vendus</Text>
+            <View style={styles.barChartContainer}>
+              {produitsPlusVendus.map((prod, index) => (
+                <View key={index} style={styles.barColumn}>
+                  {/* Conteneur de la barre pour aligner en bas */}
+                  <View style={styles.barTrack}>
+                    <View 
+                      style={[
+                        styles.actualBar, 
+                        { 
+                          height: prod.value === 2 ? 110 : 55, 
+                          backgroundColor: prod.color 
+                        }
+                      ]} 
+                    />
+                  </View>
+                  <Text style={styles.barItemName} numberOfLines={1}>{prod.name}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+
         </View>
 
-        <View style={{ height: 60 }} />
+        {/* Espacement de sécurité pour le scroll au dessus de la TabBar */}
+        <View style={{ height: 100 }} />
       </ScrollView>
 
-      {/* 5. BARRE DE NAVIGATION INFÉRIEURE */}
+      {/* 5. BARRE DE NAVIGATION INFÉRIEURE OFFICIEUZE (TAB BAR) */}
       <View style={styles.tabBar}>
         <TouchableOpacity style={styles.tabItem}>
-          <Text style={styles.tabIcon}>🛒</Text>
+          <ShoppingCart size={18} color="#71717a" />
           <Text style={styles.tabLabel}>POS</Text>
         </TouchableOpacity>
+        
         <TouchableOpacity style={[styles.tabItem, styles.tabItemActive]}>
-          <Text style={[styles.tabIcon, { color: '#fff' }]}>📊</Text>
-          <Text style={[styles.tabLabel, { color: '#fff' }]}>Dashboard</Text>
+          <BarChart3 size={18} color="#ffffff" />
+          <Text style={[styles.tabLabel, { color: '#ffffff' }]}>Dashboard</Text>
         </TouchableOpacity>
+        
         <TouchableOpacity style={styles.tabItem}>
-          <Text style={styles.tabIcon}>📦</Text>
+          <Box size={18} color="#71717a" />
           <Text style={styles.tabLabel}>Produits</Text>
         </TouchableOpacity>
+        
         <TouchableOpacity style={styles.tabItem}>
-          <Text style={styles.tabIcon}>💰</Text>
+          <CreditCard size={18} color="#71717a" />
           <Text style={styles.tabLabel}>Ventes</Text>
         </TouchableOpacity>
+        
         <TouchableOpacity style={styles.tabItem}>
-          <Text style={styles.tabIcon}>📅</Text>
+          <Calendar size={18} color="#71717a" />
           <Text style={styles.tabLabel}>Jour</Text>
         </TouchableOpacity>
+        
         <TouchableOpacity style={styles.tabItem}>
-          <Text style={styles.tabIcon}>📋</Text>
+          <FileText size={18} color="#71717a" />
           <Text style={styles.tabLabel}>Mois</Text>
         </TouchableOpacity>
+        
         <TouchableOpacity style={styles.tabItem}>
-          <Text style={styles.tabIcon}>👥</Text>
+          <Users size={18} color="#71717a" />
           <Text style={styles.tabLabel}>Utilisateurs</Text>
         </TouchableOpacity>
+        
         <TouchableOpacity style={styles.tabItem}>
-          <Text style={styles.tabIcon}>⚙️</Text>
+          <Settings size={18} color="#71717a" />
           <Text style={styles.tabLabel}>Paramètres</Text>
         </TouchableOpacity>
       </View>
@@ -170,80 +215,105 @@ export function DashboardScreen({ onLogout }: DashboardScreenProps) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fcfaf7' },
+  container: { flex: 1, backgroundColor: '#f9f6f0' },
   header: { 
     height: 65, 
-    backgroundColor: '#fff', 
+    backgroundColor: '#ffffff', 
     borderBottomWidth: 1, 
     borderColor: '#e4e4e7', 
     flexDirection: 'row', 
     justifyContent: 'space-between', 
     alignItems: 'center', 
-    paddingHorizontal: 20,
-    ...Platform.select({ ios: { paddingTop: 10 } })
+    paddingHorizontal: 24,
+    ...Platform.select({ ios: { paddingTop: 12 } })
   },
-  userInfo: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  avatarFake: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#f4f4f5', justifyContent: 'center', alignItems: 'center' },
-  userName: { fontSize: 14, fontWeight: '700', color: '#09090b' },
-  userRole: { fontSize: 11, color: '#71717a' },
+  userInfo: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  avatarFake: { width: 38, height: 38, borderRadius: 12, backgroundColor: '#b91c1c', justifyContent: 'center', alignItems: 'center' },
+  titleRow: { flexDirection: 'row', alignItems: 'center' },
+  userName: { fontSize: 15, fontWeight: '700', color: '#09090b' },
+  userRole: { fontSize: 12, color: '#71717a', marginTop: 1 },
   headerActions: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  iconBtn: { width: 36, height: 36, borderRadius: 8, borderWidth: 1, borderColor: '#e4e4e7', justifyContent: 'center', alignItems: 'center' },
-  logoutBtn: { paddingHorizontal: 16, height: 36, borderRadius: 8, borderWidth: 1, borderColor: '#e4e4e7', justifyContent: 'center', alignItems: 'center' },
+  iconBtn: { width: 36, height: 36, borderRadius: 8, borderWidth: 1, borderColor: '#e4e4e7', justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' },
+  logoutBtn: { flexDirection: 'row', paddingHorizontal: 14, height: 36, borderRadius: 8, borderWidth: 1, borderColor: '#e4e4e7', justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' },
   logoutBtnText: { fontSize: 13, fontWeight: '600', color: '#09090b' },
   
-  scrollContainer: { flex: 1, padding: 20 },
+  scrollContainer: { flex: 1, padding: 24 },
   
   banner: {
     padding: 24,
-    borderRadius: 20,
-    backgroundColor: '#b91c1c', // Couleur rouge de secours pour iOS/Android
-    marginBottom: 20,
-    // Correction de l'erreur TypeScript ici grâce au Platform.select isolé
+    borderRadius: 16,
+    backgroundColor: '#b91c1c',
+    marginBottom: 24,
     ...Platform.select({
-      web: {
-        backgroundImage: 'linear-gradient(135deg, #b91c1c 0%, #a21caf 100%)',
-      } as any,
+      web: { backgroundImage: 'linear-gradient(90deg, #b91c1c 0%, #a21caf 100%)' } as any,
     }),
   },
-  bannerTitle: { fontSize: 26, fontWeight: '800', color: '#ffffff' },
-  bannerSubtitle: { fontSize: 13, color: 'rgba(255, 255, 255, 0.8)', marginTop: 4 },
+  bannerTitle: { fontSize: 28, fontWeight: '800', color: '#ffffff', letterSpacing: -0.5 },
+  bannerSubtitle: { fontSize: 14, color: 'rgba(255, 255, 255, 0.85)', marginTop: 4 },
   
   statsGrid: { 
     flexDirection: 'row', 
     flexWrap: 'wrap', 
-    gap: 12, 
-    marginBottom: 20 
+    gap: 16, 
+    marginBottom: 24 
   },
   statCard: { 
     flex: 1, 
-    minWidth: Platform.OS === 'web' ? 180 : '45%', 
-    padding: 16, 
+    minWidth: Platform.OS === 'web' ? 200 : '45%', 
+    padding: 20, 
     borderRadius: 16,
-    backgroundColor: '#fff'
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#f4f4f5',
   },
-  statCardHeader: { padding: 0, marginBottom: 8 },
-  statIcon: { fontSize: 18, color: '#b91c1c' },
-  statCardContent: { padding: 0 },
-  statValue: { fontSize: 22, fontWeight: '700', color: '#09090b' },
-  statLabel: { fontSize: 12, color: '#71717a', marginTop: 2 },
+  iconWrapper: {
+    width: 40,
+    height: 40,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12
+  },
+  statValue: { fontSize: 24, fontWeight: '800', color: '#09090b', letterSpacing: -0.5 },
+  statLabel: { fontSize: 13, color: '#71717a', marginTop: 2, fontWeight: '500' },
   
   chartsRow: { 
     flexDirection: Platform.OS === 'web' ? 'row' : 'column', 
-    gap: 16, 
-    marginBottom: 60 
+    gap: 20,
   },
-  chartCard: { flex: 1, padding: 16, borderRadius: 20, backgroundColor: '#fff' },
-  chartTitle: { fontSize: 18, fontWeight: '700', color: '#09090b' },
-  chartPlaceholder: { padding: 0, marginTop: 12, height: 180, justifyContent: 'center' },
-  fakeChartArea: { flex: 1, borderWidth: 1, borderColor: '#f4f4f5', borderStyle: 'dashed', borderRadius: 12, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fafafa' },
+  chartCard: { flex: 1, padding: 24, borderRadius: 16, backgroundColor: '#ffffff', borderWidth: 1, borderColor: '#f4f4f5' },
+  chartTitle: { fontSize: 18, fontWeight: '700', color: '#09090b', marginBottom: 20 },
+  chartWrapper: { position: 'relative', height: 180, justifyContent: 'flex-end' },
   
-  fakeBarChart: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-around', flex: 1, paddingTop: 20 },
-  fakeBar: { width: 50, borderRadius: 6, justifyContent: 'flex-end', alignItems: 'center', paddingBottom: 8 },
-  barLabel: { fontSize: 9, color: '#fff', fontWeight: '700', textAlign: 'center' },
+  tooltipBox: {
+    position: 'absolute',
+    top: 35,
+    left: '20%',
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#e4e4e7',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 6,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+  },
+  tooltipDay: { fontSize: 11, color: '#71717a', textAlign: 'center' },
+  tooltipValue: { fontSize: 12, fontWeight: '600', color: '#b91c1c', marginTop: 1 },
+  
+  axisX: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 8, paddingHorizontal: 4 },
+  axisLabel: { fontSize: 12, color: '#71717a' },
+  
+  barChartContainer: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-around', height: 160, paddingTop: 10 },
+  barColumn: { alignItems: 'center', flex: 1 },
+  barTrack: { height: 120, justifyContent: 'flex-end', width: '100%', alignItems: 'center' },
+  actualBar: { width: 55, borderRadius: 4 },
+  barItemName: { fontSize: 12, color: '#09090b', marginTop: 10, fontWeight: '500', textAlign: 'center' },
 
   tabBar: { 
-    height: 60, 
-    backgroundColor: '#fff', 
+    height: 65, 
+    backgroundColor: '#ffffff', 
     borderTopWidth: 1, 
     borderColor: '#e4e4e7', 
     flexDirection: 'row', 
@@ -252,10 +322,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     left: 0,
-    right: 0
+    right: 0,
+    paddingHorizontal: 10
   },
-  tabItem: { alignItems: 'center', justifyContent: 'center', padding: 6, borderRadius: 10 },
-  tabItemActive: { backgroundColor: '#b91c1c', paddingHorizontal: 12 },
-  tabIcon: { fontSize: 16, color: '#71717a' },
-  tabLabel: { fontSize: 10, color: '#71717a', fontWeight: '600', marginTop: 2 }
+  tabItem: { alignItems: 'center', justifyContent: 'center', flex: 1, height: '100%' },
+  tabItemActive: { backgroundColor: '#b91c1c', borderRadius: 12, height: 48, maxWidth: 110, paddingHorizontal: 4 },
+  tabLabel: { fontSize: 11, color: '#71717a', fontWeight: '600', marginTop: 4 }
 });
