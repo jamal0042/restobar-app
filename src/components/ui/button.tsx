@@ -2,59 +2,29 @@ import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { Pressable, Text, StyleSheet, ViewStyle, TextStyle } from "react-native";
 
-// Configuration des variantes avec CVA (adaptée pour les styles d'objets React Native)
-const buttonVariants = cva(
-{
-// Styles de base partagés par tous les boutons
-flexDirection: "row",
-alignItems: "center",
-justifyContent: "center",
-borderRadius: 8, // rounded-md
-gap: 8,
-},
-{
+// CVA gère uniquement les clés de variantes sous forme de chaînes de caractères (Safe pour le Web)
+const buttonVariants = cva("", {
 variants: {
 variant: {
-default: { backgroundColor: "#18181b" }, // bg-primary (sombre Shadcn)
-destructive: { backgroundColor: "#ef4444" }, // bg-destructive
-outline: { borderWidth: 1, borderColor: "#e4e4e7", backgroundColor: "transparent" },
-secondary: { backgroundColor: "#f4f4f5" }, // bg-secondary
-ghost: { backgroundColor: "transparent" },
-link: { backgroundColor: "transparent" },
+    default: "default",
+    destructive: "destructive",
+    outline: "outline",
+    secondary: "secondary",
+    ghost: "ghost",
+    link: "link",
 },
 size: {
-default: { height: 40, paddingHorizontal: 16 }, // h-10 px-4
-sm: { height: 36, paddingHorizontal: 12, borderRadius: 6 }, // h-9 px-3
-lg: { height: 44, paddingHorizontal: 32, borderRadius: 6 }, // h-11 px-8
-icon: { height: 40, width: 40, paddingHorizontal: 0 }, // h-10 w-10
+    default: "sizeDefault",
+    sm: "sizeSm",
+    lg: "sizeLg",
+    icon: "sizeIcon",
 },
 },
 defaultVariants: {
 variant: "default",
 size: "default",
 },
-}
-);
-
-// Styles pour les textes à l'intérieur du bouton selon la variante sélectionnée
-const textVariants = (variant: string = "default") => {
-const baseText: TextStyle = { fontSize: 14, fontWeight: "500" };
-
-switch (variant) {
-case "default":
-case "destructive":
-return { ...baseText, color: "#ffffff" };
-case "secondary":
-return { ...baseText, color: "#18181b" };
-case "outline":
-case "ghost":
-return { ...baseText, color: "#09090b" };
-case "link":
-return { ...baseText, color: "#18181b", textDecorationLine: "underline" };
-default:
-return { ...baseText, color: "#ffffff" };
-}
-};
+});
 
 export interface ButtonProps extends VariantProps<typeof buttonVariants> {
 label?: string;
@@ -65,11 +35,20 @@ style?: ViewStyle;
 }
 
 const Button = React.forwardRef<any, ButtonProps>(
-({ variant, size, label, onPress, children, disabled = false, style, ...props }, ref) => {
+({ variant = "default", size = "default", label, onPress, children, disabled = false, style, ...props }, ref) => {
 
-// On force TypeScript à comprendre que ce sont des styles React Native valides
-const containerStyle = buttonVariants({ variant, size }) as ViewStyle;
-const textStyle = textVariants(variant ?? "default") as TextStyle;
+// Récupération des clés de variantes nettoyées
+const activeVariant = variant || "default";
+const activeSize = size || "default";
+
+// Combinaison sécurisée des styles natifs
+const containerStyle = [
+    styles.baseButton,
+    styles[activeVariant as keyof typeof styles] as ViewStyle,
+    styles[activeSize as keyof typeof styles] as ViewStyle,
+];
+
+const textStyle = styles[`${activeVariant}Text` as keyof typeof styles] as TextStyle;
 
 return (
     <Pressable
@@ -77,8 +56,8 @@ return (
     onPress={onPress}
     disabled={disabled}
     style={({ pressed }) => [
-        containerStyle,
-        style as ViewStyle, // Évite le soulignement sur la prop style du bouton
+        containerStyle as any,
+        style,
         disabled && { opacity: 0.5 },
         pressed && { opacity: 0.8 }
     ]}
@@ -87,7 +66,7 @@ return (
     {children ? (
         children
     ) : (
-        <Text style={textStyle}>{label}</Text>
+        <Text style={[styles.baseText, textStyle]}>{label}</Text>
     )}
     </Pressable>
 );
@@ -95,5 +74,79 @@ return (
 );
 
 Button.displayName = "Button";
+
+// Styles officiels Shadcn UI adaptés pour React Native (Mobile & Web-safe)
+const styles = StyleSheet.create({
+baseButton: {
+flexDirection: "row",
+alignItems: "center",
+justifyContent: "center",
+borderRadius: 6, // rounded-md
+gap: 8,
+},
+baseText: {
+fontSize: 14,
+fontWeight: "500",
+},
+// --- VARIANTES DE COULEURS ---
+default: {
+backgroundColor: "#18181b",
+},
+defaultText: {
+color: "#ffffff",
+},
+destructive: {
+backgroundColor: "#ef4444",
+},
+destructiveText: {
+color: "#ffffff",
+},
+outline: {
+borderWidth: 1,
+borderColor: "#e4e4e7",
+backgroundColor: "transparent",
+},
+outlineText: {
+color: "#09090b",
+},
+secondary: {
+backgroundColor: "#f4f4f5",
+},
+secondaryText: {
+color: "#18181b",
+},
+ghost: {
+backgroundColor: "transparent",
+},
+ghostText: {
+color: "#09090b",
+},
+link: {
+backgroundColor: "transparent",
+},
+linkText: {
+color: "#18181b",
+textDecorationLine: "underline",
+},
+// --- VARIANTES DE TAILLES ---
+sizeDefault: {
+height: 40,
+paddingHorizontal: 16,
+},
+sizeSm: {
+height: 36,
+paddingHorizontal: 12,
+borderRadius: 6,
+},
+sizeLg: {
+height: 44,
+paddingHorizontal: 32,
+borderRadius: 6,
+},
+sizeIcon: {
+height: 40,
+width: 40,
+},
+});
 
 export { Button, buttonVariants };
