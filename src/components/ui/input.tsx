@@ -1,5 +1,6 @@
 import * as React from "react";
 import { TextInput, StyleSheet, View, TextInputProps, Platform } from "react-native";
+import { theme } from "../../theme/colors";
 
 export interface InputProps extends TextInputProps {}
 
@@ -24,15 +25,11 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     marginVertical: 6,
-    ...Platform.select({
-      web: {
-        cursor: "text",
-      },
-    }) as any,
+    ...Platform.select({ web: { cursor: "text" } }) as any,
   },
   input: {
     height: 46,
-    backgroundColor: "rgba(255, 255, 255, 0.08)",
+    backgroundColor: theme.input, // Utilisation de la variable globale
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.15)",
     borderRadius: 8,
@@ -40,11 +37,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#ffffff",
     ...Platform.select({
-      web: {
-        outlineStyle: "none",
-        pointerEvents: "auto",
-        userSelect: "text",
-      },
+      web: { outlineStyle: "none", pointerEvents: "auto", userSelect: "text" },
     }) as any,
   },
 });
