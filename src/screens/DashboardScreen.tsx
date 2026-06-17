@@ -34,7 +34,7 @@ export function DashboardScreen({ onLogout }: DashboardScreenProps) {
 
       <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         
-        {/* 2. BANNIÈRE PRINCIPALE */}
+        {/* 2. BANNIÈRE PRINCIPALE (Avec correction du dégradé) */}
         <View style={styles.banner}>
           <Text style={styles.bannerTitle}>Tableau de bord</Text>
           <Text style={styles.bannerSubtitle}>Vue instantanée des ventes, revenus et performances.</Text>
@@ -98,7 +98,7 @@ export function DashboardScreen({ onLogout }: DashboardScreenProps) {
           </Card>
         </View>
 
-        {/* 4. BLOCS GRAPHIQUES (SIMULÉS) */}
+        {/* 4. BLOCS GRAPHIQUES (Fidèles à l'image_97eb14.png) */}
         <View style={styles.chartsRow}>
           {/* Évolution des ventes */}
           <Card style={styles.chartCard}>
@@ -106,7 +106,6 @@ export function DashboardScreen({ onLogout }: DashboardScreenProps) {
               <CardTitle style={styles.chartTitle}>Évolution des ventes</CardTitle>
             </CardHeader>
             <CardContent style={styles.chartPlaceholder}>
-              {/* Conteneur pour accueillir le futur composant graphique */}
               <View style={styles.fakeChartArea}>
                 <Text style={{ color: '#a1a1aa', fontSize: 13 }}>[ Graphique Linéaire : Ven. ventes : 0 ]</Text>
               </View>
@@ -119,7 +118,6 @@ export function DashboardScreen({ onLogout }: DashboardScreenProps) {
               <CardTitle style={styles.chartTitle}>Produits les plus vendus</CardTitle>
             </CardHeader>
             <CardContent style={styles.chartPlaceholder}>
-              {/* Simulation des barres d'histogramme */}
               <View style={styles.fakeBarChart}>
                 <View style={[styles.fakeBar, { height: 80, backgroundColor: '#b91c1c' }]}><Text style={styles.barLabel}>Coca-Cola</Text></View>
                 <View style={[styles.fakeBar, { height: 50, backgroundColor: '#a21caf' }]}><Text style={styles.barLabel}>Pizza royale</Text></View>
@@ -129,10 +127,10 @@ export function DashboardScreen({ onLogout }: DashboardScreenProps) {
           </Card>
         </View>
 
-        <View style={{ height: 40 }} />
+        <View style={{ height: 60 }} />
       </ScrollView>
 
-      {/* 5. BARRE DE NAVIGATION INFÉRIEURE (TAB BAR FAKE) */}
+      {/* 5. BARRE DE NAVIGATION INFÉRIEURE */}
       <View style={styles.tabBar}>
         <TouchableOpacity style={styles.tabItem}>
           <Text style={styles.tabIcon}>🛒</Text>
@@ -198,9 +196,14 @@ const styles = StyleSheet.create({
   banner: {
     padding: 24,
     borderRadius: 20,
-    backgroundColor: '#b91c1c',
-    backgroundImage: Platform.OS === 'web' ? 'linear-gradient(135deg, #b91c1c 0%, #a21caf 100%)' : undefined,
+    backgroundColor: '#b91c1c', // Couleur rouge de secours pour iOS/Android
     marginBottom: 20,
+    // Correction de l'erreur TypeScript ici grâce au Platform.select isolé
+    ...Platform.select({
+      web: {
+        backgroundImage: 'linear-gradient(135deg, #b91c1c 0%, #a21caf 100%)',
+      } as any,
+    }),
   },
   bannerTitle: { fontSize: 26, fontWeight: '800', color: '#ffffff' },
   bannerSubtitle: { fontSize: 13, color: 'rgba(255, 255, 255, 0.8)', marginTop: 4 },
