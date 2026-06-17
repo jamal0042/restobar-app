@@ -24,6 +24,11 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     marginVertical: 6,
+    ...Platform.select({
+      web: {
+        cursor: "text",
+      },
+    }) as any,
   },
   input: {
     height: 46,
@@ -34,13 +39,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     fontSize: 14,
     color: "#ffffff",
-    // Correction de l'erreur Platform.select ici :
     ...Platform.select({
-web: {
-outlineStyle: "none", // Enlève le contour bleu par défaut du navigateur Web
-},
-}) as any,
-},
+      web: {
+        outlineStyle: "none",
+        pointerEvents: "auto",
+        userSelect: "text",
+      },
+    }) as any,
+  },
 });
 
 export { Input };
