@@ -3,13 +3,15 @@ import { TextInput, StyleSheet, View, TextInputProps } from "react-native";
 
 export interface InputProps extends TextInputProps {}
 
-const Input = React.forwardRef<any, InputProps>(({ style, ...props }, ref) => {
+const Input = React.forwardRef<TextInput, InputProps>(({ style, value, onChangeText, ...props }, ref) => {
   return (
     <View style={styles.container}>
       <TextInput
         ref={ref}
         style={[styles.input, style]}
-        placeholderTextColor="rgba(255, 255, 255, 0.6)"
+        placeholderTextColor="rgba(255, 255, 255, 0.5)"
+        value={value}
+        onChangeText={onChangeText}
         {...props}
       />
     </View>
@@ -32,6 +34,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     fontSize: 14,
     color: "#ffffff",
+    ...Platform.select({
+      web: {
+        outlineStyle: "none", // Enlève la bordure bleue par défaut des navigateurs
+      } as any
+    })
   },
 });
 
