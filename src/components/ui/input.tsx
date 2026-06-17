@@ -1,5 +1,5 @@
 import * as React from "react";
-import { TextInput, StyleSheet, View, TextInputProps } from "react-native";
+import { TextInput, StyleSheet, View, TextInputProps, Platform } from "react-native";
 
 export interface InputProps extends TextInputProps {}
 
@@ -34,12 +34,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     fontSize: 14,
     color: "#ffffff",
+    // Correction de l'erreur Platform.select ici :
     ...Platform.select({
-      web: {
-        outlineStyle: "none", // Enlève la bordure bleue par défaut des navigateurs
-      } as any
-    })
-  },
+web: {
+outlineStyle: "none", // Enlève le contour bleu par défaut du navigateur Web
+},
+}) as any,
+},
 });
 
 export { Input };
