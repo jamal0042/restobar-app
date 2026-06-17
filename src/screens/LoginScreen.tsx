@@ -1,7 +1,8 @@
-import React from 'react';
-import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
 
 interface LoginScreenProps {
 onLoginSuccess: () => void;
@@ -13,8 +14,7 @@ defaultValues: { email: '', password: '' }
 });
 
 const onSubmit = (data: any) => {
-// Simulation de connexion pour votre RestoBar
-console.log("Tentative de connexion :", data);
+console.log("Connexion réussie :", data);
 onLoginSuccess();
 };
 
@@ -23,81 +23,162 @@ return (
     behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
     style={styles.container}
 >
+    {/* Arrière-plan dégradé simulé via styles pour une compatibilité Web/Mobile immédiate */}
+    <View style={styles.gradientBg}>
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-    <View style={styles.inner}>
+        <View style={styles.inner}>
         
-        <View style={styles.header}>
-        <Text style={styles.title}>RestoBar Connect 🍹</Text>
-        <Text style={styles.subtitle}>Entrez vos identifiants pour accéder à la caisse</Text>
-        </View>
+        {/* Boîtier Glassmorphism */}
+        <View style={styles.glassCard}>
+            
+            {/* Icône du haut */}
+            <View style={styles.iconContainer}>
+            <Text style={styles.iconText}>🏢</Text>
+            </View>
 
-        <View style={styles.form}>
-        {/* Champ Email */}
-        <Text style={[styles.label, errors.email && styles.labelError]}>Identifiant ou Email</Text>
-        <Controller
-            control={control}
-            rules={{ required: "L'identifiant est obligatoire" }}
-            name="email"
-            render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-                style={[styles.input, errors.email && styles.inputError]}
-                placeholder="nom@restobar.com"
-                placeholderTextColor="#a1a1aa"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                autoCapitalize="none"
+            {/* Titres */}
+            <Text style={styles.title}>Royal POS</Text>
+            <Text style={styles.subtitle}>Restaurant • Bar • Hôtel — terminal PWA installable</Text>
+
+            {/* Formulaire */}
+            <View style={styles.form}>
+            
+            {/* Champ Email */}
+            <Controller
+                control={control}
+                rules={{ required: true }}
+                name="email"
+                render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                    placeholder="admin@hotel.local"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    autoCapitalize="none"
+                    style={errors.email && styles.inputError}
+                />
+                )}
             />
-            )}
-        />
-        {errors.email && <Text style={styles.errorText}>{errors.email.message}</Text>}
 
-        {/* Champ Mot de passe */}
-        <Text style={[styles.label, errors.password && styles.labelError, { marginTop: 16 }]}>Mot de passe</Text>
-        <Controller
-            control={control}
-            rules={{ required: "Le mot de passe est obligatoire" }}
-            name="password"
-            render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-                style={[styles.input, errors.password && styles.inputError]}
-                placeholder="••••••••"
-                placeholderTextColor="#a1a1aa"
-                secureTextEntry
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                autoCapitalize="none"
+            {/* Champ Mot de passe */}
+            <Controller
+                control={control}
+                rules={{ required: true }}
+                name="password"
+                render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                    placeholder="••••••••"
+                    secureTextEntry
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    autoCapitalize="none"
+                    style={errors.password && styles.inputError}
+                />
+                )}
             />
-            )}
-        />
-        {errors.password && <Text style={styles.errorText}>{errors.password.message}</Text>}
 
-        {/* Bouton de soumission qui utilise votre composant UI personnalisé */}
-        <Button 
-            label="Se connecter" 
-            onPress={handleSubmit(onSubmit)} 
-            variant="default"
-            style={{ marginTop: 24 }}
-        />
+            {/* Sélecteur de Rôle statique (Fidèle à la maquette) */}
+            <View style={styles.selectFake}>
+                <Text style={styles.selectFakeText}>Administrateur</Text>
+                <Text style={styles.selectArrow}>⌃</Text>
+            </View>
+
+            {/* Bouton Connexion Sécurisée */}
+            <Button 
+                label="Connexion sécurisée" 
+                onPress={handleSubmit(onSubmit)} 
+                variant="default"
+                style={styles.submitBtn}
+            />
+            </View>
+
         </View>
-
-    </View>
+        </View>
     </TouchableWithoutFeedback>
+    </View>
 </KeyboardAvoidingView>
 );
 }
 
 const styles = StyleSheet.create({
-container: { flex: 1, backgroundColor: '#ffffff' },
-inner: { flex: 1, justifyContent: 'center', padding: 24 },
-header: { marginBottom: 32, alignItems: 'center' },
-title: { fontSize: 26, fontWeight: '700', color: '#09090b', letterSpacing: -0.5 },
-subtitle: { fontSize: 14, color: '#71717a', textAlign: 'center', marginTop: 8 },
+container: { flex: 1 },
+gradientBg: {
+flex: 1,
+// Dégradé riche violet-rouge fidèle à l'image
+backgroundColor: '#800040',
+backgroundImage: Platform.OS === 'web' ? 'linear-gradient(135deg, #a21caf 0%, #b91c1c 50%, #1e1b4b 100%)' : undefined,
+justifyContent: 'center',
+alignItems: 'center',
+},
+inner: { width: '100%', maxWidth: 420, padding: 20 },
+glassCard: {
+backgroundColor: 'rgba(255, 255, 255, 0.07)',
+borderRadius: 24,
+padding: 32,
+borderWidth: 1,
+borderColor: 'rgba(255, 255, 255, 0.12)',
+alignItems: 'center',
+// Ombres fluides (Web & Mobile)
+shadowColor: '#000',
+shadowOffset: { width: 0, height: 10 },
+shadowOpacity: 0.3,
+shadowRadius: 20,
+elevation: 10,
+...Platform.select({
+    web: {
+    backdropFilter: 'blur(20px)',
+    WebkitBackdropFilter: 'blur(20px)',
+    }
+})
+},
+iconContainer: {
+width: 48,
+height: 48,
+backgroundColor: '#ffffff',
+borderRadius: 12,
+justifyContent: 'center',
+alignItems: 'center',
+marginBottom: 20,
+},
+iconText: { fontSize: 24 },
+title: {
+fontSize: 32,
+fontWeight: '800',
+color: '#ffffff',
+textAlign: 'center',
+letterSpacing: -0.5,
+},
+subtitle: {
+fontSize: 12,
+color: 'rgba(255, 255, 255, 0.7)',
+textAlign: 'center',
+marginTop: 6,
+marginBottom: 28,
+},
 form: { width: '100%' },
-label: { fontSize: 14, fontWeight: '500', color: '#09090b', marginBottom: 6 },
-labelError: { color: '#ef4444' },
-input: { height: 44, borderWidth: 1, borderColor: '#e4e4e7', borderRadius: 8, paddingHorizontal: 12, fontSize: 14, color: '#09090b', backgroundColor: '#fafafa' },
-inputError: { borderColor: '#ef4444', backgroundColor: '#fef2f2' },
-errorText: { fontSize: 12, color: '#ef4444', marginTop: 4, fontWeight: '500' }
+inputError: {
+borderColor: 'rgba(239, 68, 68, 0.5)',
+backgroundColor: 'rgba(239, 68, 68, 0.05)',
+},
+selectFake: {
+height: 46,
+backgroundColor: 'rgba(255, 255, 255, 0.08)',
+borderWidth: 1,
+borderColor: 'rgba(255, 255, 255, 0.15)',
+borderRadius: 8,
+paddingHorizontal: 14,
+flexDirection: 'row',
+justifyContent: 'space-between',
+alignItems: 'center',
+marginVertical: 6,
+},
+selectFakeText: { color: '#ffffff', fontSize: 14 },
+selectArrow: { color: 'rgba(255, 255, 255, 0.4)', transform: [{ rotate: '180deg' }], fontSize: 12 },
+submitBtn: {
+backgroundColor: '#ffffff',
+height: 46,
+borderRadius: 24,
+marginTop: 20,
+},
 });
