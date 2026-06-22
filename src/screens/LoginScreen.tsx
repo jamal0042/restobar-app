@@ -55,8 +55,8 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
         {/* Formulaire */}
         <View style={styles.form}>
           <Text style={styles.fieldLabel}>Identifiant</Text>
-          <Input 
-            placeholder="Ex: admin" 
+          <TextInput
+            placeholder="Ex: admin"
             value={username}
             onChangeText={setUsername}
             autoCapitalize="none"
