@@ -63,7 +63,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
           />
 
           <Text style={[styles.fieldLabel, { marginTop: 12 }]}>Mot de passe</Text>
-          <Input 
+          <TextInput 
             placeholder="••••••••" 
             secureTextEntry
             value={password}
