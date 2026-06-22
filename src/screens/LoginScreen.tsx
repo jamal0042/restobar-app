@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, Platform, ActivityIndicator } from 'react-native';
-import { TextInput } from 'react-native';
+import { Input } from '../components/ui/input';
 import { theme } from '../theme/colors';
 
 interface LoginScreenProps {
@@ -55,15 +55,15 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
         {/* Formulaire */}
         <View style={styles.form}>
           <Text style={styles.fieldLabel}>Identifiant</Text>
-          <TextInput
-            placeholder="Ex: admin"
+          <Input 
+            placeholder="Ex: admin" 
             value={username}
             onChangeText={setUsername}
             autoCapitalize="none"
           />
 
           <Text style={[styles.fieldLabel, { marginTop: 12 }]}>Mot de passe</Text>
-          <TextInput 
+          <Input 
             placeholder="••••••••" 
             secureTextEntry
             value={password}
