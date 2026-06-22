@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, Platform, ActivityIndicator } from 'react-native';
-import { Input } from '../components/ui/input';
+import { TextInput } from 'react-native';
 import { theme } from '../theme/colors';
 
 interface LoginScreenProps {
